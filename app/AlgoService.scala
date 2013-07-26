@@ -35,7 +35,7 @@ object AlgoService extends Controller {
     val minLongitude = req.queryString.get("min_long").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 120.0}).getOrElse(120.0)
     val maxLongitude = req.queryString.get("max_long").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 122.5}).getOrElse(122.5)
     val minLatitude = req.queryString.get("min_lat").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 22.0}).getOrElse(22.0)
-    val maxLatitude = req.queryString.get("max_lat").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 25.5}).getOrElse(22.5)
+    val maxLatitude = req.queryString.get("max_lat").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 25.5}).getOrElse(25.5)
     val epsilon = req.queryString.get("epsilon").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 0.02}).getOrElse(0.02)
     val selector = req.queryString.get("selector").map(_.head).getOrElse("today")
 
