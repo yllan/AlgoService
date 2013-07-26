@@ -62,21 +62,25 @@ object AlgoService extends Controller {
 
       shepardF.map(shepard ⇒ {
         channel.push("[")
+
+        def longitudes(begin: Double): Stream[Double] = (begin) #:: longitudes(begin + epsilon)
       
-        def generateGrids(longitude: Double, latitude: Double, first: Boolean): Unit = {
-          val z = shepard.interp(Array(longitude, latitude))
-          channel.push((if (!first) "," else "") + f"[$longitude%.4f,$latitude%.4f,$z%.4f]")
-          if (longitude >= maxLongitude && latitude >= maxLatitude) {
+        // reverse enumeration latitude (north -> south)
+        def generateMatrix(latitude: Double, first: Boolean): Unit = {
+          if (latitude < minLatitude) {
             Logger.info("Interpolation Done.")
             channel.push("]")
             channel.eofAndEnd()
-          } else if (latitude >= maxLatitude)
-            generateGrids(longitude + epsilon, minLatitude, false)
-          else
-            generateGrids(longitude, latitude + epsilon, false)
+          } else {
+            val row = longitudes(minLongitude).takeWhile(_ <= maxLongitude).par.map(
+              longitude => f"${shepard.interp(Array(longitude, latitude))}%.4f"
+            ).mkString("[", ",", "]")
+            channel.push((if (!first) "," else "") + row)
+            generateMatrix(latitude - epsilon, false)
+          }
         }
 
-        generateGrids(minLongitude, minLatitude, true)
+        generateMatrix(minLatitude + epsilon * ((maxLatitude - minLatitude) / epsilon).floor, true)
       })
 
       Ok.stream(enumerator)
