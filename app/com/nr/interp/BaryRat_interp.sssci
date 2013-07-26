@@ -1,0 +1,22 @@
+
+// illustration  of barycentric rational interpolation
+
+var xv = Array(0.2, 3.4, 5.6, 5.8, 7.8 )
+var yv = Array(4.7, 39.8, 34.5, 29.6,  8.9)
+var dd = 4
+var baryRatInterp = new com.nr.interp.BaryRat_interp(xv, yv,  dd)
+
+plotMarks(xv, yv)   // the points
+
+hold("on")
+
+var NP = 1000
+var  xaxis = linspace(0, 10, NP)
+
+var dummy = 1  // not used
+var interpValues = new Array[Double](NP)
+for (k<-0 until NP) 
+    interpValues(k) = baryRatInterp.rawinterp(dummy, xaxis(k))
+
+plot(xaxis, interpValues)
+	 
