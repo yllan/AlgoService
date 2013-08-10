@@ -37,6 +37,7 @@ object AlgoService extends Controller {
     val minLatitude = req.queryString.get("min_lat").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 22.0}).getOrElse(22.0)
     val maxLatitude = req.queryString.get("max_lat").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 25.5}).getOrElse(25.5)
     val epsilon = req.queryString.get("epsilon").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 0.02}).getOrElse(0.02)
+    val p: Double = req.queryString.get("p").map(l ⇒ try {l.head.toDouble} catch { case t: Throwable ⇒ 2.0}).getOrElse(2.0)
     val selector = req.queryString.get("selector").map(_.head).getOrElse("today")
 
     (for (url <- req.queryString.get("from").map(_.head))
@@ -55,7 +56,7 @@ object AlgoService extends Controller {
           ).toSeq
         implicit val timeout = Timeout(120.seconds)
         Logger.info("Shepard calculated!")
-        (shepardActor ask rainfallSamples).mapTo[Shep_interp]
+        (shepardActor ask ShepardParameter(p, rainfallSamples)).mapTo[Shep_interp]
       })
 
       val (enumerator, channel) = Concurrent.broadcast[String]
