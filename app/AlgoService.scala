@@ -61,7 +61,7 @@ object AlgoService extends Controller {
       val (enumerator, channel) = Concurrent.broadcast[String]
 
       shepardF.map(shepard ⇒ {
-        channel.push("[")
+        channel.push("rainData=[")
 
         def longitudes(multiplier: Int): Stream[Double] = (minLongitude + epsilon * multiplier) #:: longitudes(multiplier + 1)
       
